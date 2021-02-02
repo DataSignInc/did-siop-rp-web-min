@@ -84,9 +84,9 @@ async function processJWT(req, res, next){
         DID_SIOP.ALGORITHMS['ES256K-R']
     );
 
-    let valid;
-    console.log('Response validated...');
-    valid = siop_rp.validateResponse(idToken).then(() => {
+    try {
+        console.log('Response validated...');
+        let valid = await siop_rp.validateResponse(idToken)
         console.log("success");
         console.log('Validated response',valid); 
         if (valid) {
@@ -94,12 +94,11 @@ async function processJWT(req, res, next){
         } else {
             res.send({"error": "something"})
         }
-    }).catch((error) => {
+    } catch (error) {
         res.status(401).send({error: error.message});
         console.log("error sent")
         console.log(error)
-    });
-
+    }
 }
 
 

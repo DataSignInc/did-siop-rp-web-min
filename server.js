@@ -52,7 +52,7 @@ async function generateRequestObject(){
     console.log('Got RP instance ....');
     siop_rp.addSigningParams(
         '8329a21d9ce86fa08e75354469fb8d78834f126415d5b00eef55c2f587f3abca', // Private key
-        'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6#owner', // Corresponding authentication method in RP's did document (to be used as kid value for key)
+        'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6#controller', // Corresponding authentication method in RP's did document (to be used as kid value for key)
         DID_SIOP.KEY_FORMATS.HEX, //Format in which the key is supplied. List of values is given below
         DID_SIOP.ALGORITHMS['ES256K-R']
     );

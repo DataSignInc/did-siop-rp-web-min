@@ -67,7 +67,7 @@ async function generateRequestObject(){
 
 async function processJWT(req, res, next){
     // console.log(req)
-    const { idToken } = req.query
+    const { id_token: idToken } = req.query
     siop_rp = await DID_SIOP.RP.getRP(
         'localhost:5001/home', // RP's redirect_uri
         'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6', // RP's did

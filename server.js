@@ -83,9 +83,23 @@ async function processJWT(req, res, next){
         DID_SIOP.KEY_FORMATS.HEX, //Format in which the key is supplied. List of values is given below
         DID_SIOP.ALGORITHMS['ES256K-R']
     );
-    let valid = await siop_rp.validateResponse(idToken);
+
+    let valid;
     console.log('Response validated...');
-    console.log('Validated response',valid); 
+    valid = siop_rp.validateResponse(idToken).then(() => {
+        console.log("success");
+        console.log('Validated response',valid); 
+        if (valid) {
+            res.send({})
+        } else {
+            res.send({"error": "something"})
+        }
+    }).catch((error) => {
+        res.status(401).send({error: error.message});
+        console.log("error sent")
+        console.log(error)
+    });
+
 }
 
 

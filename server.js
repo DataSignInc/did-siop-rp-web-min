@@ -17,7 +17,7 @@ app.get('/', function (req, res) {
 });
 
 const siop_rp_promise = DID_SIOP.RP.getRP(
-    'localhost:5001/home', // RP's redirect_uri
+    'somay-mbp.local:5001/home', // RP's redirect_uri
     'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6', // RP's did
     {
         "jwks_uri": "https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks",
@@ -28,6 +28,7 @@ const siop_rp_promise = DID_SIOP.RP.getRP(
 app.get('/index',indexPage);
 // app.get('/home',homePage);
 app.get('/get_request_object',getRequestObject);
+app.get('/start',startSignIn);
 app.get('/home',processJWT);
 
 function indexPage(req, res, next) {
@@ -38,6 +39,13 @@ function indexPage(req, res, next) {
 function homePage(req, res, next) {
     console.log("homePage Invoked");
     res.sendFile('home.html', { root: __dirname  + '/' });
+}
+
+async function startSignIn(req, res, next) {
+    console.log("startSignIn() Invoked");
+    var requestObject;
+    requestObject = await generateRequestObject();
+    res.redirect(302, requestObject);
 }
 
 async function getRequestObject(req, res, next) {
@@ -97,6 +105,8 @@ async function processJWT(req, res, next){
 
 
 const port = process.env.PORT || 5001;
-http.createServer(app).listen(port, () => {
+const server = http.createServer(app);
+server.listen(port, () => {
   console.log('Listening on ', port);
+  console.log(server.address().address)
 });

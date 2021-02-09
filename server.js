@@ -17,7 +17,7 @@ app.get('/', function (req, res) {
 });
 
 const siop_rp_promise = DID_SIOP.RP.getRP(
-    '192.168.0.6:5001/home', // RP's redirect_uri
+    'http://192.168.0.6:5001/home', // RP's redirect_uri
     'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6', // RP's did
     {
         "jwks_uri": "https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks",
@@ -29,7 +29,7 @@ app.get('/index',indexPage);
 // app.get('/home',homePage);
 app.get('/get_request_object',getRequestObject);
 app.get('/start',startSignIn);
-app.get('/home',processJWT);
+app.get('/home',homePage);
 
 function indexPage(req, res, next) {
     console.log("indexPage Invoked");

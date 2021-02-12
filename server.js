@@ -12,7 +12,7 @@ const DID_SIOP = require('did-siop');
 
 var app = express();
 
-app.use('/',express.static(__dirname + '/'));
+app.use('/', express.static(__dirname + '/'));
 
 app.get('/', function (req, res) {
     res.redirect('/index');
@@ -22,25 +22,42 @@ const siop_rp_promise = DID_SIOP.RP.getRP(
     `http://${IP}:5001/home`, // RP's redirect_uri
     'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6', // RP's did
     {
+        "authorization_endpoint": "openid:",
+        "issuer": "https://self-issued.me/v2",
+        "response_types_supported":
+            ["id_token"],
+        "scopes_supported":
+            ["openid", "profile", "email", "address", "phone"],
+        "subject_types_supported":
+            ["pairwise"],
+        "subject_identifier_types_supported":
+            ["did:web:", "did:ion:"],
+        "id_token_signing_alg_values_supported": 
+            ["ES256K-R", "EdDSA", "RS256"],
+        "request_object_signing_alg_values_supported":
+            ["ES256", "ES256K"],
+        "redirect_uris": [`http://${IP}:5001/home`],
         "jwks_uri": "https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks",
-        "id_token_signed_response_alg": ["ES256K-R", "EdDSA", "RS256"]
+        // "id_token_encrypted_response_alg": "", 
+        // "id_token_encrypted_response_enc": "",
+        "did": 'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6'
     }
 )
 
-app.get('/index',indexPage);
+app.get('/index', indexPage);
 // app.get('/home',homePage);
-app.get('/get_request_object',getRequestObject);
-app.get('/start',startSignIn);
-app.get('/home',homePage);
+app.get('/get_request_object', getRequestObject);
+app.get('/start', startSignIn);
+app.get('/home', homePage);
 
 function indexPage(req, res, next) {
     console.log("indexPage Invoked");
-    res.sendFile('index.html', { root: __dirname  + '/' });
+    res.sendFile('index.html', { root: __dirname + '/' });
 }
 
 function homePage(req, res, next) {
     console.log("homePage Invoked");
-    res.sendFile('home.html', { root: __dirname  + '/' });
+    res.sendFile('home.html', { root: __dirname + '/' });
 }
 
 async function startSignIn(req, res, next) {
@@ -54,13 +71,13 @@ async function getRequestObject(req, res, next) {
     console.log("getRequestObject Invoked");
     var requestObject;
     requestObject = await generateRequestObject();
-    res.send(JSON.stringify({'reqObj':requestObject}));
+    res.send(JSON.stringify({ 'reqObj': requestObject }));
 }
 
-async function generateRequestObject(){
+async function generateRequestObject() {
     console.log('startProcess');
     var request;
-    
+
     siop_rp = await siop_rp_promise;
     console.log('Got RP instance ....');
     siop_rp.addSigningParams(
@@ -77,7 +94,7 @@ async function generateRequestObject(){
     return request;
 }
 
-async function processJWT(req, res, next){
+async function processJWT(req, res, next) {
     // console.log(req)
     const { id_token: idToken } = req.query
     siop_rp = await siop_rp_promise;
@@ -92,14 +109,14 @@ async function processJWT(req, res, next){
         console.log('Response validated...');
         let valid = await siop_rp.validateResponse(idToken)
         console.log("success");
-        console.log('Validated response',valid); 
+        console.log('Validated response', valid);
         if (valid) {
             res.send({})
         } else {
-            res.send({"error": "something"})
+            res.send({ "error": "something" })
         }
     } catch (error) {
-        res.status(401).send({error: error.message});
+        res.status(401).send({ error: error.message });
         console.log("error sent")
         console.log(error)
     }
@@ -109,6 +126,6 @@ async function processJWT(req, res, next){
 const port = process.env.PORT || 5001;
 const server = http.createServer(app);
 server.listen(port, () => {
-  console.log('Listening on ', port);
-  console.log(server.address().address)
+    console.log('Listening on ', port);
+    console.log(server.address().address)
 });

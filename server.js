@@ -4,6 +4,8 @@
 //*
 //********************************************************************
 
+const IP = "192.168.0.5"
+
 const express = require('express');
 const http = require('http');
 const DID_SIOP = require('did-siop');
@@ -17,7 +19,7 @@ app.get('/', function (req, res) {
 });
 
 const siop_rp_promise = DID_SIOP.RP.getRP(
-    'http://192.168.0.6:5001/home', // RP's redirect_uri
+    `http://${IP}:5001/home`, // RP's redirect_uri
     'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6', // RP's did
     {
         "jwks_uri": "https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks",

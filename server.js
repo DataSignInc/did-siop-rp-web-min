@@ -4,7 +4,7 @@
 //*
 //********************************************************************
 
-const IP = "192.168.0.5"
+const IP = "192.168.0.6"
 
 const express = require('express');
 const http = require('http');
@@ -88,7 +88,7 @@ async function generateRequestObject() {
     );
 
     console.log('RP SigningParams added ...');
-    request = await siop_rp.generateRequest();
+    request = await siop_rp.generateRequest({redirect_uri: `http://${IP}:5001/home`});
 
     console.log('Request generated ...', request);
     return request;

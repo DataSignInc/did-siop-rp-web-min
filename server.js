@@ -20,7 +20,7 @@ app.get('/', function (req, res) {
 
 const siop_rp_promise = DID_SIOP.RP.getRP(
     `http://${IP}:5001/home`, // RP's redirect_uri
-    'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6', // RP's did
+    'did:web:assets-datasign.s3-ap-northeast-1.amazonaws.com:siop-test:rp', // RP's did
     {
         "authorization_endpoint": "openid:",
         "issuer": "https://self-issued.me/v2",
@@ -40,7 +40,7 @@ const siop_rp_promise = DID_SIOP.RP.getRP(
         "jwks_uri": "https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks",
         // "id_token_encrypted_response_alg": "", 
         // "id_token_encrypted_response_enc": "",
-        "did": 'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6'
+        "did": 'did:web:assets-datasign.s3-ap-northeast-1.amazonaws.com:siop-test:rp'
     }
 )
 
@@ -82,7 +82,7 @@ async function generateRequestObject() {
     console.log('Got RP instance ....');
     siop_rp.addSigningParams(
         '8329a21d9ce86fa08e75354469fb8d78834f126415d5b00eef55c2f587f3abca', // Private key
-        'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6#controller', // Corresponding authentication method in RP's did document (to be used as kid value for key)
+        'did:web:assets-datasign.s3-ap-northeast-1.amazonaws.com:siop-test:rp#controller', // Corresponding authentication method in RP's did document (to be used as kid value for key)
         DID_SIOP.KEY_FORMATS.HEX, //Format in which the key is supplied. List of values is given below
         DID_SIOP.ALGORITHMS['ES256K-R']
     );
@@ -100,7 +100,7 @@ async function processJWT(req, res, next) {
     siop_rp = await siop_rp_promise;
     siop_rp.addSigningParams(
         '8329a21d9ce86fa08e75354469fb8d78834f126415d5b00eef55c2f587f3abca', // Private key
-        'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6#controller', // Corresponding authentication method in RP's did document (to be used as kid value for key)
+        'did:web:assets-datasign.s3-ap-northeast-1.amazonaws.com:siop-test:rp#controller', // Corresponding authentication method in RP's did document (to be used as kid value for key)
         DID_SIOP.KEY_FORMATS.HEX, //Format in which the key is supplied. List of values is given below
         DID_SIOP.ALGORITHMS['ES256K-R']
     );

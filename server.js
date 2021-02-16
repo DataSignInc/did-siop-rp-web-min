@@ -88,7 +88,7 @@ async function generateRequestObject() {
     );
 
     console.log('RP SigningParams added ...');
-    request = await siop_rp.generateRequest({redirect_uri: `http://${IP}:5001/home`});
+    request = await siop_rp.generateRequest({redirect_uri: `http://${IP}:5001/home`, kid: 'did:ethr:0xA51E8281c201cd6Ed488C3701882A44B1871DAd6#controller'});
 
     console.log('Request generated ...', request);
     return request;

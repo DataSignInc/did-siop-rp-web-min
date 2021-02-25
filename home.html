@@ -7,10 +7,14 @@
   <body>
     <h1>Home Page</h1>
     <h4>id_token:</h4>
-    <div id="idtoken" style="font-size: 20px; line-break: anywhere"></div>
+    <code id="idtoken" style="font-size: 20px; line-break: anywhere"></code>
     <br />
+    <h4>is valid id token?</h4>
+    <p id="status" style="font-size: 20px; line-break: anywhere"></p>
     <h4>decoded token:</h4>
-    <div id="decodedToken" style="font-size: 20px; line-break: anywhere"></div>
+    <code style="font-size: 20px; line-break: anywhere">
+      <pre id="decodedToken"></pre>
+    </code>
     <br />
 
     <button onclick="gotoJWTIO()">View in jwt.io</button>
@@ -21,32 +25,19 @@
       let resJWT = document.location.hash.substr("#id_token=".length);
       document.getElementById("idtoken").innerHTML = resJWT;
 
-      processJWT(resJWT);
-
-      async function processJWT(jwt) {
-        siop_rp = await DID_SIOP.RP.getRP(
-          "localhost:5001/home", // RP's redirect_uri
-          "did:web:assets-datasign.s3-ap-northeast-1.amazonaws.com:siop-test:rp", // RP's did
-          {
-            jwks_uri:
-              "https://uniresolver.io/1.0/identifiers/did:example:0xab;transform-keys=jwks",
-            id_token_signed_response_alg: ["ES256K-R", "EdDSA", "RS256"],
-          }
-        );
-        console.log("Got RP instance ....");
-        siop_rp.addSigningParams(
-          "8329a21d9ce86fa08e75354469fb8d78834f126415d5b00eef55c2f587f3abca", // Private key
-          "did:web:assets-datasign.s3-ap-northeast-1.amazonaws.com:siop-test:rp#owner", // Corresponding authentication method in RP's did document (to be used as kid value for key)
-          DID_SIOP.KEY_FORMATS.HEX, //Format in which the key is supplied. List of values is given below
-          DID_SIOP.ALGORITHMS["ES256K-R"]
-        );
-        let valid = await siop_rp.validateResponse(resJWT);
-        console.log("Response validated...");
-        console.log("Validated response", valid);
-        document.getElementById("decodedToken").innerHTML = JSON.stringify(
-          valid
-        );
-      }
+      fetch(`http://192.168.0.6:5001/validate?id_token=${resJWT}`)
+        .then((data) => {
+          return data.json();
+        })
+        .then((json) => {
+          console.log(json);
+          document.getElementById("decodedToken").innerHTML = JSON.stringify(
+            json.idToken,
+            null,
+            2
+          );
+          document.getElementById("status").innerHTML = json.status
+        });
 
       function gotoJWTIO() {
         var url = `http://www.jwt.io/?id_token=${resJWT}`;

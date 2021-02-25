@@ -49,6 +49,7 @@ app.get('/index', indexPage);
 app.get('/get_request_object', getRequestObject);
 app.get('/start', startSignIn);
 app.get('/home', homePage);
+app.get('/validate', processJWT);
 
 function indexPage(req, res, next) {
     console.log("indexPage Invoked");
@@ -102,7 +103,7 @@ async function processJWT(req, res, next) {
         '8329a21d9ce86fa08e75354469fb8d78834f126415d5b00eef55c2f587f3abca', // Private key
         'did:web:assets-datasign.s3-ap-northeast-1.amazonaws.com:siop-test:rp#controller', // Corresponding authentication method in RP's did document (to be used as kid value for key)
         DID_SIOP.KEY_FORMATS.HEX, //Format in which the key is supplied. List of values is given below
-        DID_SIOP.ALGORITHMS['ES256K-R']
+        DID_SIOP.ALGORITHMS['ES256K']
     );
 
     try {
@@ -111,12 +112,12 @@ async function processJWT(req, res, next) {
         console.log("success");
         console.log('Validated response', valid);
         if (valid) {
-            res.send({})
+            res.send({idToken: valid, status: "Valid"})
         } else {
-            res.send({ "error": "something" })
+            res.send({ status: "something" })
         }
     } catch (error) {
-        res.status(401).send({ error: error.message });
+        res.status(401).send({ status: error.message });
         console.log("error sent")
         console.log(error)
     }

@@ -52,16 +52,19 @@ app.get('/home', homePage);
 app.get('/validate', processJWT);
 
 function indexPage(req, res, next) {
+    res.append("Cache-Control", "no-cache")
     console.log("indexPage Invoked");
     res.sendFile('index.html', { root: __dirname + '/' });
 }
 
 function homePage(req, res, next) {
+    res.append("Cache-Control", "no-cache")
     console.log("homePage Invoked");
     res.sendFile('home.html', { root: __dirname + '/' });
 }
 
 async function startSignIn(req, res, next) {
+    res.append("Cache-Control", "no-cache")
     console.log("startSignIn() Invoked");
     var requestObject;
     requestObject = await generateRequestObject();
@@ -69,6 +72,7 @@ async function startSignIn(req, res, next) {
 }
 
 async function getRequestObject(req, res, next) {
+    res.append("Cache-Control", "no-cache")
     console.log("getRequestObject Invoked");
     var requestObject;
     requestObject = await generateRequestObject();
@@ -107,6 +111,7 @@ async function processJWT(req, res, next) {
     );
 
     try {
+        res.append("Cache-Control", "no-cache")
         console.log('Response validated...');
         let valid = await siop_rp.validateResponse(idToken)
         console.log("success");
